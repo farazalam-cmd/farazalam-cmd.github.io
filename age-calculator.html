@@ -1,0 +1,843 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<meta name="description" content="Free age calculator: find your exact age in years, months and days, total days lived, next birthday countdown, zodiac sign and birthstone. Runs entirely in your browser — nothing you enter is sent or stored." />
+<link rel="icon" href="data:," />
+<title>Age Calculator — Exact Age in Years, Months &amp; Days</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Age Calculator",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free calculator that finds exact age in years, months and days from a date of birth, plus total time lived and the next birthday."
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "How is age calculated?", "acceptedAnswer": { "@type": "Answer", "text": "Age is the time between your date of birth and today (or another date you choose), counted in completed years, then completed months, then remaining days, with leap years and month lengths taken into account." } },
+    { "@type": "Question", "name": "Is my date of birth sent or stored anywhere?", "acceptedAnswer": { "@type": "Answer", "text": "No. The calculation runs entirely in your browser. Your date of birth is never sent to a server or stored." } },
+    { "@type": "Question", "name": "What happens if I was born on 29 February?", "acceptedAnswer": { "@type": "Answer", "text": "Your age still increases once a year. For both the age calculation and the next-birthday countdown, this calculator uses 28 February in years that are not leap years, and counts each 29 February you have lived through as a leap day." } },
+    { "@type": "Question", "name": "Can I calculate my age on a past or future date?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Use the 'Age on a date' tab, enter your date of birth and the date you want, and the calculator shows how old you were or will be on that date." } },
+    { "@type": "Question", "name": "Why does my age differ from another calculator?", "acceptedAnswer": { "@type": "Answer", "text": "Most differences come from the reference date or time zone: a calculator using UTC while it is still yesterday (or already tomorrow) where you are can be a day out. Others divide total days by 365.25, which gives an approximation rather than a calendar age. This calculator uses your device's local date and real calendar arithmetic." } },
+    { "@type": "Question", "name": "Is this accurate enough for official documents?", "acceptedAnswer": { "@type": "Answer", "text": "For everyday use, yes — the arithmetic follows the standard calendar method. For passports, benefits, school admission or any legal purpose, always use the age stated on the official document or by the issuing authority, as their rules on cut-off dates can differ." } },
+    { "@type": "Question", "name": "Does the calculator work for dates before 1900?", "acceptedAnswer": { "@type": "Answer", "text": "The date fields accept dates from 1 January 1900 onwards. That covers every living person and keeps the calendar rules (including the 1900 non-leap century year) correct." } },
+    { "@type": "Question", "name": "Is this calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is free to use, with no account, no sign-up and no limit on calculations." } }
+  ]
+}
+</script>
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-soft:#f2f5f1;
+    --bg-tint:#eef4f0;
+    --surface:#ffffff;
+    --ink:#17211c;
+    --ink-soft:#4d5c53;
+    --ink-faint:#6d7d73;
+    --line:#d9e2dc;
+    --teal:#0e6b5c;
+    --teal-deep:#0a4f44;
+    --teal-soft:#dcebe6;
+    --amber:#b45309;
+    --amber-soft:#fdf0d7;
+    --coral:#c2410c;
+    --error:#b42318;
+    --error-soft:#fdecea;
+    --radius:14px;
+    --shadow:0 10px 30px rgba(23,33,28,.08);
+    --font-body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --font-display:"Lora",Georgia,"Times New Roman",serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1512;
+      --bg-soft:#141c18;
+      --bg-tint:#16211d;
+      --surface:#18221e;
+      --ink:#edf2ee;
+      --ink-soft:#b6c3bb;
+      --ink-faint:#93a49a;
+      --line:#2a3831;
+      --teal:#5ec4b0;
+      --teal-deep:#7fd6c3;
+      --teal-soft:#1e332d;
+      --amber:#f2b25c;
+      --amber-soft:#2b2413;
+      --coral:#f08a5c;
+      --error:#ff9b8f;
+      --error-soft:#3a1d1a;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto} *{transition:none !important}}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal);text-underline-offset:3px}
+  a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:6px}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  /* ---- top navigation ---- */
+  .topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .topbar-inner{display:flex;align-items:center;gap:18px;min-height:58px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+  .wordmark{font-family:var(--font-display);font-weight:700;font-size:19px;color:var(--ink);text-decoration:none;white-space:nowrap}
+  .wordmark span{color:var(--teal)}
+  nav.mainnav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+  nav.mainnav a{color:var(--ink-soft);text-decoration:none;font-size:14.5px;font-weight:600;padding:7px 10px;border-radius:999px}
+  nav.mainnav a:hover{background:var(--bg-soft);color:var(--ink)}
+  /* ---- hero / intro ---- */
+  .intro{padding:44px 0 8px}
+  .intro h1{font-family:var(--font-display);font-size:clamp(34px,5.4vw,52px);line-height:1.08;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+  .intro h1 em{font-style:italic;color:var(--teal)}
+  .lede{font-size:clamp(17px,2.2vw,19.5px);color:var(--ink-soft);max-width:58ch;margin:0 0 8px}
+  .trustline{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0;padding:0;list-style:none}
+  .trustline li{font-size:13.5px;font-weight:600;color:var(--ink-soft);background:var(--bg-soft);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+  /* ---- calculator ---- */
+  .calc-shell{padding:26px 0 10px}
+  .tabs{display:flex;gap:6px;background:var(--bg-soft);border:1px solid var(--line);border-radius:999px;padding:5px;width:fit-content;max-width:100%;flex-wrap:wrap}
+  .tabs button{appearance:none;border:0;background:transparent;color:var(--ink-soft);font:inherit;font-size:14.5px;font-weight:700;padding:9px 16px;border-radius:999px;cursor:pointer}
+  .tabs button[aria-selected="true"]{background:var(--teal);color:#fff}
+  @media (max-width:560px){.tabs{width:100%}.tabs button{flex:1;text-align:center;padding:9px 6px;font-size:13.5px;white-space:nowrap}}
+  @media (prefers-color-scheme: dark){.tabs button[aria-selected="true"]{background:var(--teal);color:#0f1512}}
+  .panel{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:clamp(20px,4vw,34px)}
+  .panel h2{font-family:var(--font-display);font-size:24px;margin:0 0 4px}
+  .panel .hint{color:var(--ink-soft);margin:0 0 20px;font-size:15.5px}
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .fields .full{grid-column:1 / -1}
+  label{display:block;font-size:13.5px;font-weight:700;letter-spacing:.02em;margin-bottom:7px}
+  input[type="date"]{width:100%;font:inherit;font-size:17px;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-height:52px}
+  input[type="date"]:hover{border-color:var(--ink-faint)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;align-items:center}
+  .btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:16px;border-radius:10px;padding:13px 24px;text-decoration:none;display:inline-block}
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-deep)}
+  @media (prefers-color-scheme: dark){.btn-primary{color:#0f1512}}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ink-faint)}
+  .btn-small{padding:9px 16px;font-size:14.5px}
+  .error{display:none;margin-top:16px;background:var(--error-soft);color:var(--error);border:1px solid color-mix(in srgb,var(--error) 35%,transparent);border-radius:10px;padding:12px 14px;font-size:15px;font-weight:600}
+  .error.show{display:block}
+  /* results */
+  .results{display:none;margin-top:26px;border-top:1px solid var(--line);padding-top:24px}
+  .results.show{display:block}
+  .birthday-note{display:none;margin-bottom:18px;background:var(--amber-soft);border:1px solid color-mix(in srgb,var(--amber) 35%,transparent);border-radius:12px;padding:14px 16px;font-weight:600}
+  .birthday-note.show{display:block}
+  .age-banner{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:6px}
+  .age-banner .num{font-family:var(--font-display);font-size:clamp(40px,7vw,58px);font-weight:700;line-height:1;color:var(--teal)}
+  .age-banner .unit{font-family:var(--font-display);font-size:clamp(20px,3vw,26px);font-weight:600}
+  .age-sentence{font-size:18px;margin:0 0 4px}
+  .age-sentence strong{font-weight:800}
+  .subline{color:var(--ink-soft);margin:0 0 22px}
+  .stat-rows{border-top:1px solid var(--line)}
+  .stat-row{display:grid;grid-template-columns:1fr auto;gap:8px 20px;padding:13px 2px;border-bottom:1px solid var(--line);align-items:baseline}
+  .stat-row dt{color:var(--ink-soft)}
+  .stat-row dd{margin:0;font-weight:800;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+  .stat-row dd small{display:block;font-weight:500;color:var(--ink-faint);font-size:13px;white-space:normal;line-height:1.4;max-width:240px;margin-left:auto}
+  #statLive{white-space:normal;text-align:right}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:24px}
+  @media (max-width:640px){.two-col{grid-template-columns:1fr}.fields{grid-template-columns:1fr}}
+  .mini-card{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--bg-soft)}
+  .mini-card h3{margin:0 0 8px;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft)}
+  .mini-card p{margin:0}
+  .mini-card .big{font-family:var(--font-display);font-size:26px;font-weight:700;line-height:1.2}
+  .progress{height:10px;background:var(--teal-soft);border-radius:999px;overflow:hidden;margin:10px 0 8px}
+  .progress i{display:block;height:100%;background:var(--teal);border-radius:999px}
+  .result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+  .copied{font-size:14px;font-weight:700;color:var(--teal);align-self:center;display:none}
+  .copied.show{display:inline}
+  .empty-note{margin-top:22px;border:1px dashed var(--line);border-radius:var(--radius);padding:18px;color:var(--ink-soft);font-size:15.5px}
+  .empty-note p{margin:0}
+  /* ---- content sections ---- */
+  section.block{padding:44px 0 8px}
+  section.block h2{font-family:var(--font-display);font-size:clamp(26px,3.6vw,34px);line-height:1.15;margin:0 0 12px;letter-spacing:-.01em}
+  section.block h3{font-size:19px;margin:26px 0 6px}
+  section.block p,section.block li{color:var(--ink-soft)}
+  section.block p strong,section.block li strong{color:var(--ink)}
+  .section-kicker{font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--teal);margin:0 0 8px}
+  .steps{list-style:none;margin:22px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:720px){.steps{grid-template-columns:1fr}}
+  .steps li{border:1px solid var(--line);border-radius:var(--radius);padding:20px;background:var(--surface)}
+  .steps .step-no{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--teal);line-height:1}
+  .steps h3{margin:10px 0 6px;color:var(--ink)}
+  .steps p{margin:0;font-size:15.5px}
+  .worked{background:var(--bg-tint);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin-top:22px}
+  .worked p{margin:6px 0}
+  .worked code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14.5px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink)}
+  table.ref{width:100%;border-collapse:collapse;margin-top:14px;font-size:15.5px}
+  table.ref th,table.ref td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.ref th{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft)}
+  table.ref td:first-child{font-weight:700;color:var(--ink);white-space:nowrap}
+  @media (max-width:640px){
+    table.ref,table.ref tbody,table.ref tr,table.ref td{display:block;width:100%}
+    table.ref thead{display:none}
+    table.ref tr{border-bottom:1px solid var(--line);padding:8px 0}
+    table.ref td{border:0;padding:3px 0}
+    table.ref td:first-child{white-space:normal}
+  }
+  details.faq{border:1px solid var(--line);border-radius:12px;padding:0;margin-bottom:10px;background:var(--surface);overflow:hidden}
+  details.faq summary{cursor:pointer;list-style:none;padding:16px 18px;font-weight:700;font-size:16.5px;display:flex;justify-content:space-between;gap:14px;align-items:center}
+  details.faq summary::-webkit-details-marker{display:none}
+  details.faq summary::after{content:"+";font-size:22px;font-weight:400;color:var(--teal);flex:none}
+  details.faq[open ] summary::after{content:"–"}
+  details.faq .answer{padding:0 18px 18px;color:var(--ink-soft)}
+  details.faq .answer p{margin:0}
+  .policy{border-top:1px solid var(--line);margin-top:44px}
+  .policy h2{font-family:var(--font-display);font-size:26px;margin:0 0 10px}
+  .policy p,.policy li{color:var(--ink-soft);font-size:16px}
+  .policy .updated{font-size:14px;color:var(--ink-faint)}
+  /* contact form */
+  .contact-form{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+  .contact-form .full{grid-column:1 / -1}
+  .contact-form input[type="text"],.contact-form input[type="email"],.contact-form textarea{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+  .contact-form textarea{min-height:130px;resize:vertical}
+  @media (max-width:640px){.contact-form{grid-template-columns:1fr}}
+  footer{border-top:1px solid var(--line);margin-top:52px;padding:26px 0 40px;color:var(--ink-faint);font-size:14.5px}
+  footer .foot{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between;align-items:flex-start}
+  footer nav{display:flex;gap:16px;flex-wrap:wrap}
+  footer a{color:var(--ink-soft)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="wordmark" href="#calculator">Age <span>Calculator</span></a>
+    <nav class="mainnav" aria-label="Site">
+      <a href="#calculator">Calculator</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="#about">About</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#disclaimer">Disclaimer</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="intro" id="calculator">
+    <h1>How old are you, <em>exactly?</em></h1>
+    <p class="lede">Enter your date of birth and get your precise age in years, months and days — plus how many days you have lived, when your next birthday falls, and the day of the week you were born on.</p>
+    <ul class="trustline">
+      <li>Free, no sign-up</li>
+      <li>Leap years counted</li>
+      <li>Nothing you enter leaves your browser</li>
+    </ul>
+  </div>
+
+  <div class="calc-shell">
+    <div class="tabs" role="tablist" aria-label="Calculator tools">
+      <button type="button" role="tab" id="tab-age" aria-selected="true" aria-controls="panel-age" data-tab="age">Age calculator</button>
+      <button type="button" role="tab" id="tab-ondate" aria-selected="false" aria-controls="panel-ondate" data-tab="ondate" tabindex="-1">Age on a date</button>
+      <button type="button" role="tab" id="tab-diff" aria-selected="false" aria-controls="panel-diff" data-tab="diff" tabindex="-1">Date difference</button>
+    </div>
+
+    <!-- AGE CALCULATOR -->
+    <section class="panel" id="panel-age" role="tabpanel" aria-labelledby="tab-age">
+      <h2>Calculate your age</h2>
+      <p class="hint">Your age today, <span id="todayLabel">today</span>, from your date of birth.</p>
+      <form id="ageForm" novalidate>
+        <div class="fields">
+          <div class="full">
+            <label for="dob">Date of birth</label>
+            <input type="date" id="dob" name="dob" min="1900-01-01" autocomplete="bday" required />
+          </div>
+        </div>
+        <p class="error" id="dobError" role="alert"></p>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Calculate age</button>
+          <button class="btn btn-ghost" type="button" id="exampleBtn">Try an example</button>
+          <button class="btn btn-ghost" type="button" id="clearBtn">Clear</button>
+        </div>
+      </form>
+
+      <div class="empty-note" id="ageEmpty">
+        <p><strong style="color:var(--ink)">No result yet.</strong> Pick your date of birth above — or try the example — and your exact age, time lived and next birthday will appear here.</p>
+      </div>
+
+      <div class="results" id="ageResults" aria-live="polite">
+        <p class="birthday-note" id="birthdayNote"></p>
+        <div class="age-banner" aria-label="Your age">
+          <span class="num" id="ageYears">0</span><span class="unit">years,</span>
+          <span class="num" id="ageMonths">0</span><span class="unit">months,</span>
+          <span class="num" id="ageDays">0</span><span class="unit">days</span>
+        </div>
+        <p class="age-sentence" id="ageSentence"></p>
+        <p class="subline" id="bornLine"></p>
+
+        <dl class="stat-rows">
+          <div class="stat-row"><dt>Total months lived</dt><dd id="statMonths">—</dd></div>
+          <div class="stat-row"><dt>Total weeks lived</dt><dd id="statWeeks">—</dd></div>
+          <div class="stat-row"><dt>Total days lived</dt><dd id="statDays">—</dd></div>
+          <div class="stat-row"><dt>Total hours lived</dt><dd id="statHours">—</dd></div>
+          <div class="stat-row"><dt>Time alive (live, from midnight)</dt><dd id="statLive">—<small>days · hours · minutes · seconds from midnight on your date of birth — no birth time was entered</small></dd></div>
+          <div class="stat-row"><dt>Leap days (29 February) lived through</dt><dd id="statLeap">—</dd></div>
+        </dl>
+
+        <div class="two-col">
+          <div class="mini-card">
+            <h3>Next birthday</h3>
+            <p class="big" id="nextBirthdayDate">—</p>
+            <p id="nextBirthdayText"></p>
+            <div class="progress" aria-hidden="true"><i id="birthdayProgress" style="width:0%"></i></div>
+            <p id="birthdayProgressText" style="font-size:14px;color:var(--ink-soft)"></p>
+          </div>
+          <div class="mini-card">
+            <h3>Born on</h3>
+            <p class="big" id="bornWeekday">—</p>
+            <p id="zodiacText"></p>
+            <p id="stoneText" style="margin-top:8px"></p>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="mini-card">
+            <h3>Next milestone birthday</h3>
+            <p class="big" id="milestoneAge">—</p>
+            <p id="milestoneText"></p>
+          </div>
+          <div class="mini-card">
+            <h3>Your age in other units</h3>
+            <p id="otherUnits"></p>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn btn-ghost btn-small" type="button" id="copyBtn">Copy result</button>
+          <span class="copied" id="copiedMsg">Copied to clipboard.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- AGE ON A DATE -->
+    <section class="panel" id="panel-ondate" role="tabpanel" aria-labelledby="tab-ondate" hidden>
+      <h2>How old were you — or will you be — on a date?</h2>
+      <p class="hint">Useful for forms, anniversaries, school cut-offs and looking back or ahead.</p>
+      <form id="ondateForm" novalidate>
+        <div class="fields">
+          <div>
+            <label for="dob2">Date of birth</label>
+            <input type="date" id="dob2" min="1900-01-01" autocomplete="bday" required />
+          </div>
+          <div>
+            <label for="targetDate">Date to calculate age on</label>
+            <input type="date" id="targetDate" min="1900-01-01" required />
+          </div>
+        </div>
+        <p class="error" id="ondateError" role="alert"></p>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Calculate age on that date</button>
+        </div>
+      </form>
+      <div class="results" id="ondateResults" aria-live="polite">
+        <div class="age-banner">
+          <span class="num" id="ondateYears">0</span><span class="unit">years,</span>
+          <span class="num" id="ondateMonths">0</span><span class="unit">months,</span>
+          <span class="num" id="ondateDays">0</span><span class="unit">days</span>
+        </div>
+        <p class="age-sentence" id="ondateSentence"></p>
+        <p class="subline" id="ondateSubline"></p>
+      </div>
+    </section>
+
+    <!-- DATE DIFFERENCE -->
+    <section class="panel" id="panel-diff" role="tabpanel" aria-labelledby="tab-diff" hidden>
+      <h2>Difference between two dates</h2>
+      <p class="hint">How much time passed between any two dates, in years, months, days — and in total days and weeks.</p>
+      <form id="diffForm" novalidate>
+        <div class="fields">
+          <div>
+            <label for="startDate">Start date</label>
+            <input type="date" id="startDate" min="1900-01-01" required />
+          </div>
+          <div>
+            <label for="endDate">End date</label>
+            <input type="date" id="endDate" min="1900-01-01" required />
+          </div>
+        </div>
+        <p class="error" id="diffError" role="alert"></p>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Calculate difference</button>
+        </div>
+      </form>
+      <div class="results" id="diffResults" aria-live="polite">
+        <div class="age-banner">
+          <span class="num" id="diffYears">0</span><span class="unit">years,</span>
+          <span class="num" id="diffMonths">0</span><span class="unit">months,</span>
+          <span class="num" id="diffDays">0</span><span class="unit">days</span>
+        </div>
+        <p class="age-sentence" id="diffSentence"></p>
+        <dl class="stat-rows">
+          <div class="stat-row"><dt>Total days</dt><dd id="diffTotalDays">—</dd></div>
+          <div class="stat-row"><dt>Total weeks</dt><dd id="diffTotalWeeks">—</dd></div>
+          <div class="stat-row"><dt>Total months</dt><dd id="diffTotalMonths">—</dd></div>
+        </dl>
+      </div>
+    </section>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="block" id="how-it-works">
+    <p class="section-kicker">How it works</p>
+    <h2>Age is counted in completed years, then months, then days</h2>
+    <p>It sounds simple, but calendars make it fiddly: months are 28 to 31 days long, and every fourth year (usually) adds a 29 February. This calculator does the borrowing properly, so the answer is the age you would give on a form — not an approximation from dividing days by 365.</p>
+    <ol class="steps">
+      <li>
+        <div class="step-no">1</div>
+        <h3>Count the years</h3>
+        <p>Subtract the birth year from the current year, then take one year off if this year&rsquo;s birthday has not happened yet.</p>
+      </li>
+      <li>
+        <div class="step-no">2</div>
+        <h3>Count the months</h3>
+        <p>Count the completed months since the last birthday, borrowing a month when the current day of the month is earlier than the birth day.</p>
+      </li>
+      <li>
+        <div class="step-no">3</div>
+        <h3>Count the days</h3>
+        <p>The days left over, using the actual length of the previous month — so a result is always a real calendar age, never a rounded one.</p>
+      </li>
+    </ol>
+
+    <div class="worked">
+      <h3 style="margin-top:0">Worked example</h3>
+      <p>Someone born on <code>1 January 2000</code>, calculated on <code>3 November 2026</code>:</p>
+      <p><code>2026 − 2000 = 26 years</code> &nbsp;→&nbsp; January to November is 10 completed months &nbsp;→&nbsp; 1 November to 3 November is 2 days.</p>
+      <p><strong style="color:var(--ink)">Age: 26 years, 10 months and 2 days.</strong> The same person has lived 9,803 days, including 7 leap days (29 February in 2000, 2004, 2008, 2012, 2016, 2020 and 2024).</p>
+    </div>
+
+    <h3>Leap years, and being born on 29 February</h3>
+    <p>A year is a leap year if it is divisible by 4, except century years, which must be divisible by 400 — so 2000 was a leap year, but 1900 and 2100 are not. If you were born on 29 February, your birthday only exists every four years. For both the age calculation and the countdown on this page, 28 February is used as the birthday in non-leap years, which is the common convention; some people prefer to celebrate on 1 March instead. Either way, your age in years still increases once a year.</p>
+
+    <h3>Birthstones and zodiac signs, by birth month and date</h3>
+    <p>Your result includes the Western zodiac sign for your birthday and your birth month&rsquo;s traditional birthstone. For reference:</p>
+    <table class="ref">
+      <thead><tr><th scope="col">Month</th><th scope="col">Birthstone</th><th scope="col">Zodiac sign in this month</th></tr></thead>
+      <tbody>
+        <tr><td>January</td><td>Garnet</td><td>Capricorn (to 19 Jan) · Aquarius (from 20 Jan)</td></tr>
+        <tr><td>February</td><td>Amethyst</td><td>Aquarius (to 18 Feb) · Pisces (from 19 Feb)</td></tr>
+        <tr><td>March</td><td>Aquamarine</td><td>Pisces (to 20 Mar) · Aries (from 21 Mar)</td></tr>
+        <tr><td>April</td><td>Diamond</td><td>Aries (to 19 Apr) · Taurus (from 20 Apr)</td></tr>
+        <tr><td>May</td><td>Emerald</td><td>Taurus (to 20 May) · Gemini (from 21 May)</td></tr>
+        <tr><td>June</td><td>Pearl</td><td>Gemini (to 20 Jun) · Cancer (from 21 Jun)</td></tr>
+        <tr><td>July</td><td>Ruby</td><td>Cancer (to 22 Jul) · Leo (from 23 Jul)</td></tr>
+        <tr><td>August</td><td>Peridot</td><td>Leo (to 22 Aug) · Virgo (from 23 Aug)</td></tr>
+        <tr><td>September</td><td>Sapphire</td><td>Virgo (to 22 Sep) · Libra (from 23 Sep)</td></tr>
+        <tr><td>October</td><td>Opal</td><td>Libra (to 22 Oct) · Scorpio (from 23 Oct)</td></tr>
+        <tr><td>November</td><td>Topaz</td><td>Scorpio (to 21 Nov) · Sagittarius (from 22 Nov)</td></tr>
+        <tr><td>December</td><td>Turquoise</td><td>Sagittarius (to 21 Dec) · Capricorn (from 22 Dec)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:15px">Zodiac dates are the commonly used ranges; the exact changeover can shift by a day depending on the year and time zone.</p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="block" id="faq">
+    <p class="section-kicker">Questions</p>
+    <h2>Frequently asked questions</h2>
+
+    <details class="faq">
+      <summary>How is age calculated?</summary>
+      <div class="answer"><p>Age is the time between your date of birth and the date you are calculating for, counted in completed years, then completed months, then the remaining days — using real calendar month lengths and leap years, not an average of 365 days per year.</p></div>
+    </details>
+    <details class="faq">
+      <summary>Is my date of birth sent or stored anywhere?</summary>
+      <div class="answer"><p>No. Every calculation on this page runs in your own browser. Your date of birth is never sent to a server, saved, or shared. Closing the page removes it. See the <a href="#privacy">Privacy Policy</a> for the full statement.</p></div>
+    </details>
+    <details class="faq">
+      <summary>What if I was born on 29 February?</summary>
+      <div class="answer"><p>Your age still increases once a year. For both the age calculation and the next-birthday countdown, this calculator uses 28 February in years that are not leap years. The number of leap days you have lived through is shown separately in your result.</p></div>
+    </details>
+    <details class="faq">
+      <summary>Can I calculate my age on a past or future date?</summary>
+      <div class="answer"><p>Yes — use the &ldquo;Age on a date&rdquo; tab. Enter your date of birth and any date from 1900 onwards, and it shows how old you were, or will be, on that date.</p></div>
+    </details>
+    <details class="faq">
+      <summary>Why does my age differ from another calculator?</summary>
+      <div class="answer"><p>Most differences come from the reference date or time zone: a calculator using UTC while it is still yesterday (or already tomorrow) where you are can be a day out. Others divide total days by 365.25, which gives an approximation rather than a calendar age. This calculator uses your device&rsquo;s local date and real calendar arithmetic.</p></div>
+    </details>
+    <details class="faq">
+      <summary>Is this accurate enough for official documents?</summary>
+      <div class="answer"><p>For everyday use, yes — the arithmetic follows the standard calendar method. For passports, benefits, school admission or any legal purpose, always use the age stated on the official document or by the issuing authority, as their rules on cut-off dates can differ.</p></div>
+    </details>
+    <details class="faq">
+      <summary>Does the calculator work for dates before 1900?</summary>
+      <div class="answer"><p>The date fields accept dates from 1 January 1900 onwards. That covers every living person and keeps the calendar rules (including the 1900 non-leap century year) correct.</p></div>
+    </details>
+    <details class="faq">
+      <summary>Is this calculator free?</summary>
+      <div class="answer"><p>Yes. It is free to use, with no account, no sign-up and no limit on calculations.</p></div>
+    </details>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="block policy" id="about">
+    <p class="section-kicker">About</p>
+    <h2>About this age calculator</h2>
+    <p>This site exists for one simple job: answering &ldquo;how old am I, exactly?&rdquo; without a sign-up, a download, or a page full of distractions. It was built as a free, static tool — the whole calculation happens in your browser, so it works on a phone, a tablet or a computer, and it works the same way every time you open it.</p>
+    <p>Alongside the exact age, it shows the totals people usually want next: days lived, weeks lived, the next birthday, the weekday you were born on, and your zodiac sign and birthstone. The &ldquo;Age on a date&rdquo; and &ldquo;Date difference&rdquo; tabs cover the two follow-up questions that come up most often — how old someone was on a particular date, and how much time passed between two dates.</p>
+    <p>The site is run by Faraz Alam. If you spot a calculation that looks wrong, or something on this page could be clearer, please use the <a href="#contact">contact form</a> below and say what date you entered and what you expected — that makes it possible to check and fix.</p>
+  </section>
+
+  <!-- PRIVACY -->
+  <section class="block policy" id="privacy">
+    <p class="section-kicker">Privacy</p>
+    <h2>Privacy Policy</h2>
+    <p class="updated">Last updated: 3 November 2026.</p>
+    <h3>What this site collects — and what it does not</h3>
+    <p>This calculator does not collect, send, or store the date of birth you enter. The calculation is performed entirely in your web browser, on your own device. When you close or refresh the page, the date you entered is gone. This site uses no accounts, no sign-in, and no database of visitors.</p>
+    <h3>Advertising</h3>
+    <p>This site may display advertising served by Google AdSense in the future. Google and its partners may use cookies to serve ads based on your visits to this site or other sites. You can opt out of personalised advertising by visiting <a href="https://adssettings.google.com/" rel="noopener">Google Ads Settings</a>. Google&rsquo;s use of advertising cookies enables it and its partners to serve ads to visitors based on their visit to this site and/or other sites on the internet. For more information, see <a href="https://policies.google.com/technologies/ads" rel="noopener">How Google uses information from sites or apps that use its services</a>.</p>
+    <h3>Analytics and cookies</h3>
+    <p>This site does not run its own analytics. If an advertising or analytics service is added later, this policy will be updated before it takes effect, and the change will be dated above.</p>
+    <h3>Links to other sites</h3>
+    <p>Links on this page lead to Google&rsquo;s own settings and policy pages. This site is not responsible for the content or privacy practices of external sites.</p>
+    <h3>Children</h3>
+    <p>This calculator is a general-purpose tool. It knowingly collects no information from anyone, including children, because it collects nothing at all.</p>
+    <h3>Changes to this policy</h3>
+    <p>If this policy changes, the new version will appear on this page with a new &ldquo;last updated&rdquo; date. Continued use of the site after a change means you accept the updated policy.</p>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <section class="block policy" id="disclaimer">
+    <p class="section-kicker">Disclaimer</p>
+    <h2>Disclaimer</h2>
+    <p>The results on this page are calculated from the date you enter, using standard calendar arithmetic. They are provided for general information and everyday use only. They are not legal, medical, or official advice, and they do not replace the age or date stated on an official document or by an issuing authority.</p>
+    <p>If a result looks wrong, check the date you entered first — a single mistyped digit is the most common cause. Zodiac signs, birthstones and milestone ages are traditional or conventional information provided for interest, and the exact zodiac changeover can vary by year and time zone.</p>
+    <p>This site is provided &ldquo;as is&rdquo;, without warranties of any kind. The site owner is not liable for decisions made solely on the basis of a calculation on this page.</p>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="block policy" id="contact">
+    <p class="section-kicker">Contact</p>
+    <h2>Contact</h2>
+    <p>Questions, corrections, or suggestions for this calculator are welcome. Fill in the form and choose &ldquo;Open email draft&rdquo; — your email app will open with the message ready to send. Nothing is sent automatically, and nothing you type here is stored on this site.</p>
+    <form class="contact-form" id="contactForm" novalidate>
+      <div>
+        <label for="cName">Your name</label>
+        <input type="text" id="cName" name="name" autocomplete="name" />
+      </div>
+      <div>
+        <label for="cEmail">Your email</label>
+        <input type="email" id="cEmail" name="email" autocomplete="email" />
+      </div>
+      <div class="full">
+        <label for="cSubject">Subject</label>
+        <input type="text" id="cSubject" name="subject" value="Age Calculator — feedback" />
+      </div>
+      <div class="full">
+        <label for="cMessage">Message</label>
+        <textarea id="cMessage" name="message" required placeholder="What would you like to say? If it is about a calculation, include the date you entered and the result you expected."></textarea>
+      </div>
+      <div class="full">
+        <p class="error" id="contactError" role="alert"></p>
+        <div class="actions" style="margin-top:0">
+          <button class="btn btn-primary" type="submit">Open email draft</button>
+          <a class="btn btn-ghost" href="mailto:farazalam0001@gmail.com?subject=Age%20Calculator%20—%20feedback">Email directly</a>
+        </div>
+      </div>
+    </form>
+    <p style="font-size:15px">You can also write directly to <a href="mailto:farazalam0001@gmail.com">farazalam0001@gmail.com</a>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <strong style="color:var(--ink)">Age Calculator</strong> — free, exact age in years, months and days.<br />
+      Calculations run in your browser. Nothing you enter is sent or stored.
+    </div>
+    <nav aria-label="Footer">
+      <a href="#calculator">Calculator</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="#about">About</a>
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#disclaimer">Disclaimer</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+  <div class="wrap" style="margin-top:14px">© 2026 Faraz Alam. All rights reserved.</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var fmt = new Intl.NumberFormat("en-IN");
+  function $(id){ return document.getElementById(id); }
+  function parseDateInput(v){
+    if(!v) return null;
+    var parts = v.split("-");
+    if(parts.length!==3) return null;
+    var d = new Date(Number(parts[0]), Number(parts[1])-1, Number(parts[2]));
+    if(d.getFullYear()!==Number(parts[0]) || d.getMonth()!==Number(parts[1])-1 || d.getDate()!==Number(parts[2])) return null;
+    return d;
+  }
+  function midnight(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function formatLocalDate(d){
+    function p(n){ return (n<10?"0":"")+n; }
+    return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());
+  }
+  function daysInMonth(y,m){ return new Date(y, m+1, 0).getDate(); }
+  function isLeap(y){ return (y%4===0 && y%100!==0) || y%400===0; }
+  function calcAgeParts(from, to){
+    var years = to.getFullYear()-from.getFullYear();
+    var months = to.getMonth()-from.getMonth();
+    var days = to.getDate()-from.getDate();
+    if(days<0){ months--; days += daysInMonth(to.getFullYear(), to.getMonth()-1); }
+    if(months<0){ years--; months+=12; }
+    return {years:years, months:months, days:days};
+  }
+  function longDate(d){ return d.toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"long", year:"numeric"}); }
+  function shortDate(d){ return d.toLocaleDateString("en-GB",{day:"numeric", month:"long", year:"numeric"}); }
+  function zodiac(m,d){
+    var signs=[
+      ["Capricorn",12,22,1,19],["Aquarius",1,20,2,18],["Pisces",2,19,3,20],
+      ["Aries",3,21,4,19],["Taurus",4,20,5,20],["Gemini",5,21,6,20],
+      ["Cancer",6,21,7,22],["Leo",7,23,8,22],["Virgo",8,23,9,22],
+      ["Libra",9,23,10,22],["Scorpio",10,23,11,21],["Sagittarius",11,22,12,21]
+    ];
+    for(var i=0;i<signs.length;i++){
+      var s=signs[i];
+      if((m===s[1] && d>=s[2]) || (m===s[3] && d<=s[4])) return s[0];
+    }
+    return "Capricorn";
+  }
+  var stones=["Garnet","Amethyst","Aquamarine","Diamond","Emerald","Pearl","Ruby","Peridot","Sapphire","Opal","Topaz","Turquoise"];
+  var animals=["Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse","Goat","Monkey","Rooster","Dog","Pig"];
+  function chinese(year){ return animals[((year-4)%12+12)%12]; }
+  function countLeapDays(dob, to){
+    var n=0;
+    for(var y=dob.getFullYear(); y<=to.getFullYear(); y++){
+      if(!isLeap(y)) continue;
+      var leap=new Date(y,1,29);
+      if(leap>dob && leap<=to) n++;
+    }
+    return n;
+  }
+  function birthdayInYear(dob, year){
+    if(dob.getMonth()===1 && dob.getDate()===29 && !isLeap(year)) return new Date(year,1,28);
+    return new Date(year, dob.getMonth(), dob.getDate());
+  }
+  /* Age from a date of birth, using the same anniversary as birthdayInYear:
+     a 29 February birthday is treated as 28 February in non-leap years,
+     so the age turns on 28 February — the day the countdown and birthday
+     note use — rather than 1 March. Dates before 28 February keep the
+     standard calendar borrowing, counting from the previous anniversary. */
+  function calcAgeFromDob(dob, to){
+    var from = dob;
+    if(dob.getMonth()===1 && dob.getDate()===29 && !isLeap(to.getFullYear())
+       && (to.getMonth()>1 || (to.getMonth()===1 && to.getDate()>=28))){
+      from = new Date(dob.getFullYear(), 1, 28);
+    }
+    return calcAgeParts(from, to);
+  }
+  function showError(el,msg){ el.textContent=msg; el.classList.add("show"); }
+  function hideError(el){ el.textContent=""; el.classList.remove("show"); }
+
+  var today = midnight(new Date());
+  $("todayLabel").textContent = shortDate(today);
+  $("dob").max = formatLocalDate(today);
+  $("dob2").max = "2100-12-31";
+
+  /* Tabs */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function selectTab(tab){
+    tabs.forEach(function(t){
+      var on = t===tab;
+      t.setAttribute("aria-selected", on?"true":"false");
+      t.tabIndex = on?0:-1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    });
+  }
+  tabs.forEach(function(t){
+    t.addEventListener("click", function(){ selectTab(t); });
+    t.addEventListener("keydown", function(e){
+      var i=tabs.indexOf(t);
+      if(e.key==="ArrowRight"){ e.preventDefault(); var n=tabs[(i+1)%tabs.length]; selectTab(n); n.focus(); }
+      if(e.key==="ArrowLeft"){ e.preventDefault(); var p=tabs[(i-1+tabs.length)%tabs.length]; selectTab(p); p.focus(); }
+    });
+  });
+
+  var liveTimer=null, lastDob=null;
+  function stopLive(){ if(liveTimer){ clearInterval(liveTimer); liveTimer=null; } }
+  function renderLive(){
+    if(!lastDob) return;
+    var now=new Date();
+    var diff=Math.max(0, now - lastDob);
+    var s=Math.floor(diff/1000);
+    var days=Math.floor(s/86400); s-=days*86400;
+    var h=Math.floor(s/3600); s-=h*3600;
+    var m=Math.floor(s/60); s-=m*60;
+    $("statLive").innerHTML = fmt.format(days)+"d "+h+"h "+m+"m "+s+"s<small>from midnight on your date of birth — no birth time was entered</small>";
+  }
+
+  $("ageForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var dob=parseDateInput($("dob").value);
+    var err=$("dobError");
+    if(!dob){ showError(err,"Please enter your date of birth."); return; }
+    if(dob>today){ showError(err,"Your date of birth cannot be in the future."); return; }
+    if(dob.getFullYear()<1900){ showError(err,"Please enter a date from 1900 onwards."); return; }
+    hideError(err);
+    var age=calcAgeFromDob(dob, today);
+    var totalDays=Math.floor((today-midnight(dob))/86400000);
+    var totalWeeks=Math.floor(totalDays/7);
+    var totalMonths=age.years*12+age.months;
+    var leap=countLeapDays(dob, today);
+    var isBirthday = dob.getMonth()===today.getMonth() && dob.getDate()===today.getDate()
+      || (dob.getMonth()===1 && dob.getDate()===29 && !isLeap(today.getFullYear()) && today.getMonth()===1 && today.getDate()===28);
+
+    $("ageYears").textContent=age.years;
+    $("ageMonths").textContent=age.months;
+    $("ageDays").textContent=age.days;
+    $("ageSentence").innerHTML="You are <strong>"+age.years+" years, "+age.months+" months and "+age.days+" days</strong> old.";
+    $("bornLine").textContent="Born on "+longDate(dob)+". Calculated on "+shortDate(today)+".";
+    $("statMonths").textContent=fmt.format(totalMonths)+" months";
+    $("statWeeks").textContent=fmt.format(totalWeeks)+" weeks";
+    $("statDays").textContent=fmt.format(totalDays)+" days";
+    $("statHours").textContent=fmt.format(totalDays*24)+" hours";
+    $("statLeap").textContent=fmt.format(leap);
+
+    var note=$("birthdayNote");
+    if(isBirthday){
+      note.textContent="Happy birthday! You turn "+(today.getFullYear()-dob.getFullYear())+" today.";
+      note.classList.add("show");
+    } else { note.classList.remove("show"); }
+
+    var nextB = birthdayInYear(dob, today.getFullYear());
+    if(nextB<=today) nextB = birthdayInYear(dob, today.getFullYear()+1);
+    var prevB = birthdayInYear(dob, nextB.getFullYear()-1);
+    if(prevB>today) prevB = birthdayInYear(dob, nextB.getFullYear()-1);
+    var daysUntil=Math.round((midnight(nextB)-today)/86400000);
+    var cycle=Math.round((midnight(nextB)-midnight(prevB))/86400000) || 365;
+    var elapsed=cycle-daysUntil;
+    var pct=Math.max(0,Math.min(100,Math.round(elapsed/cycle*100)));
+    var turning = nextB.getFullYear()-dob.getFullYear();
+    $("nextBirthdayDate").textContent=longDate(nextB);
+    $("nextBirthdayText").textContent="In "+fmt.format(daysUntil)+" day"+(daysUntil===1?"":"s")+" — you will turn "+turning+".";
+    $("birthdayProgress").style.width=pct+"%";
+    $("birthdayProgressText").textContent=pct+"% of the year since your last birthday has passed.";
+
+    $("bornWeekday").textContent=dob.toLocaleDateString("en-GB",{weekday:"long"});
+    $("zodiacText").textContent="Western zodiac: "+zodiac(dob.getMonth()+1, dob.getDate())+" · Chinese zodiac: Year of the "+chinese(dob.getFullYear())+".";
+    $("stoneText").textContent="Birthstone for "+dob.toLocaleDateString("en-GB",{month:"long"})+": "+stones[dob.getMonth()]+".";
+
+    var milestones=[18,21,25,30,40,50,60,65,70,75,80,90,100];
+    var nextM=null;
+    for(var i=0;i<milestones.length;i++){ if(milestones[i]>age.years){ nextM=milestones[i]; break; } }
+    if(nextM){
+      $("milestoneAge").textContent=nextM+" years";
+      $("milestoneText").textContent="In "+(nextM-age.years)+" year"+((nextM-age.years)===1?"":"s")+" — on "+shortDate(birthdayInYear(dob, dob.getFullYear()+nextM))+".";
+    } else {
+      $("milestoneAge").textContent="100+ years";
+      $("milestoneText").textContent="You have passed every milestone listed here — a remarkable age.";
+    }
+    $("otherUnits").innerHTML="About <strong>"+fmt.format(Math.round(totalDays/30.44))+"</strong> average months · <strong>"+fmt.format(totalWeeks)+"</strong> weeks · <strong>"+fmt.format(Math.round(totalDays/365.25*10)/10)+"</strong> years in decimal.";
+
+    lastDob=new Date(dob.getFullYear(), dob.getMonth(), dob.getDate());
+    stopLive(); renderLive();
+    liveTimer=setInterval(renderLive,1000);
+
+    $("ageEmpty").style.display="none";
+    $("ageResults").classList.add("show");
+    $("copiedMsg").classList.remove("show");
+    $("ageResults").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+
+  $("exampleBtn").addEventListener("click", function(){
+    $("dob").value="2000-08-15";
+    $("ageForm").dispatchEvent(new Event("submit",{cancelable:true}));
+  });
+  $("clearBtn").addEventListener("click", function(){
+    $("dob").value="";
+    hideError($("dobError"));
+    $("ageResults").classList.remove("show");
+    $("ageEmpty").style.display="";
+    $("birthdayNote").classList.remove("show");
+    stopLive(); lastDob=null;
+    $("dob").focus();
+  });
+  $("copyBtn").addEventListener("click", function(){
+    var text=$("ageSentence").textContent+" "+$("bornLine").textContent+" Total days lived: "+$("statDays").textContent+". "+$("nextBirthdayText").textContent;
+    function done(){ $("copiedMsg").classList.add("show"); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      var ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  });
+
+  /* Age on a date */
+  $("ondateForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var dob=parseDateInput($("dob2").value), target=parseDateInput($("targetDate").value);
+    var err=$("ondateError");
+    if(!dob || !target){ showError(err,"Please enter both dates."); return; }
+    if(dob.getFullYear()<1900 || target.getFullYear()<1900){ showError(err,"Please enter dates from 1900 onwards."); return; }
+    if(target<dob){ showError(err,"The second date must be on or after the date of birth."); return; }
+    hideError(err);
+    var age=calcAgeFromDob(dob, target);
+    $("ondateYears").textContent=age.years;
+    $("ondateMonths").textContent=age.months;
+    $("ondateDays").textContent=age.days;
+    $("ondateSentence").innerHTML="On <strong>"+shortDate(target)+"</strong>, you "+(target<=today?"were":"will be")+" <strong>"+age.years+" years, "+age.months+" months and "+age.days+" days</strong> old.";
+    $("ondateSubline").textContent="Born "+shortDate(dob)+" · "+fmt.format(Math.floor((midnight(target)-midnight(dob))/86400000))+" days after birth.";
+    $("ondateResults").classList.add("show");
+  });
+
+  /* Date difference */
+  $("diffForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var a=parseDateInput($("startDate").value), b=parseDateInput($("endDate").value);
+    var err=$("diffError");
+    if(!a || !b){ showError(err,"Please enter both dates."); return; }
+    if(a.getFullYear()<1900 || b.getFullYear()<1900){ showError(err,"Please enter dates from 1900 onwards."); return; }
+    if(b<a){ showError(err,"The end date must be on or after the start date."); return; }
+    hideError(err);
+    var parts=calcAgeParts(a,b);
+    var totalDays=Math.floor((midnight(b)-midnight(a))/86400000);
+    $("diffYears").textContent=parts.years;
+    $("diffMonths").textContent=parts.months;
+    $("diffDays").textContent=parts.days;
+    $("diffSentence").innerHTML="Between <strong>"+shortDate(a)+"</strong> and <strong>"+shortDate(b)+"</strong> there "+(totalDays===1?"is":"are")+" <strong>"+parts.years+" years, "+parts.months+" months and "+parts.days+" days</strong>.";
+    $("diffTotalDays").textContent=fmt.format(totalDays)+" days";
+    $("diffTotalWeeks").textContent=fmt.format(Math.floor(totalDays/7))+" weeks and "+(totalDays%7)+" days";
+    $("diffTotalMonths").textContent=fmt.format(parts.years*12+parts.months)+" completed months";
+    $("diffResults").classList.add("show");
+  });
+
+  /* Contact: build a mail draft, never send automatically */
+  $("contactForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var msg=$("cMessage").value.trim();
+    var err=$("contactError");
+    if(!msg){ showError(err,"Please write a message first."); $("cMessage").focus(); return; }
+    hideError(err);
+    var name=$("cName").value.trim(), email=$("cEmail").value.trim();
+    var body="Name: "+(name||"(not given)")+"\nEmail: "+(email||"(not given)")+"\n\n"+msg;
+    var subject=$("cSubject").value.trim()||"Age Calculator — feedback";
+    var a=document.createElement("a");
+    a.href="mailto:farazalam0001@gmail.com?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+})();
+</script>
+</body>
+</html>
