@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
-<meta name="description" content="Free age calculator: find your exact age in years, months and days, total days lived, next birthday countdown, zodiac sign and birthstone. Runs entirely in your browser — nothing you enter is sent or stored." />
+<meta name="description" content="Free age calculator with birthday countdown, leap year checker and day of the week finder: find your exact age in years, months and days, total days lived, zodiac sign and birthstone, plus in-depth guides to leap years, zodiac signs and age milestones. Runs entirely in your browser — nothing you enter is sent or stored." />
 <link rel="icon" href="data:," />
 <title>Age Calculator — Exact Age in Years, Months &amp; Days</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -33,7 +33,13 @@
     { "@type": "Question", "name": "Why does my age differ from another calculator?", "acceptedAnswer": { "@type": "Answer", "text": "Most differences come from the reference date or time zone: a calculator using UTC while it is still yesterday (or already tomorrow) where you are can be a day out. Others divide total days by 365.25, which gives an approximation rather than a calendar age. This calculator uses your device's local date and real calendar arithmetic." } },
     { "@type": "Question", "name": "Is this accurate enough for official documents?", "acceptedAnswer": { "@type": "Answer", "text": "For everyday use, yes — the arithmetic follows the standard calendar method. For passports, benefits, school admission or any legal purpose, always use the age stated on the official document or by the issuing authority, as their rules on cut-off dates can differ." } },
     { "@type": "Question", "name": "Does the calculator work for dates before 1900?", "acceptedAnswer": { "@type": "Answer", "text": "The date fields accept dates from 1 January 1900 onwards. That covers every living person and keeps the calendar rules (including the 1900 non-leap century year) correct." } },
-    { "@type": "Question", "name": "Is this calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is free to use, with no account, no sign-up and no limit on calculations." } }
+    { "@type": "Question", "name": "Is this calculator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. It is free to use, with no account, no sign-up and no limit on calculations." } },
+    { "@type": "Question", "name": "How many days until my next birthday?", "acceptedAnswer": { "@type": "Answer", "text": "Use the Birthday countdown tool in the More date tools section. Enter your date of birth and it shows a live countdown in days, hours, minutes and seconds to your next birthday, the date of that birthday, and the age you will turn. The main calculator also shows the number of days until your next birthday in its result." } },
+    { "@type": "Question", "name": "What is a leap year and how do I check one?", "acceptedAnswer": { "@type": "Answer", "text": "A leap year has 366 days, with an extra day on 29 February. A year is a leap year if it is divisible by 4, except century years, which must be divisible by 400. So 2000 and 2024 are leap years, but 1900 and 2100 are not. Use the Leap year checker in the More date tools section to test any year and see the previous and next leap years." } },
+    { "@type": "Question", "name": "How do I find the day of the week for any date?", "acceptedAnswer": { "@type": "Answer", "text": "Use the Day of the week finder in the More date tools section. Enter any date from 1 January 1900 onwards and it shows the weekday that date fell or falls on, with the date written out in full. For example, 1 January 2000 was a Saturday." } },
+    { "@type": "Question", "name": "What is the difference between calendar age and decimal age?", "acceptedAnswer": { "@type": "Answer", "text": "Calendar age is your age counted in completed years, months and days — for example, 26 years, 10 months and 2 days — using real month lengths and leap years. Decimal age divides your total days lived by 365.25 to give a single number such as 26.84 years. Decimal age is useful for charts and averages, but calendar age is the age used on forms and in everyday life." } },
+    { "@type": "Question", "name": "Can I use this calculator on my phone?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The site is designed to work on phones, tablets and computers. All tools — the age calculator, birthday countdown, leap year checker and day of the week finder — work in a mobile browser with no app to install and no sign-up." } },
+    { "@type": "Question", "name": "What age milestones does the calculator show?", "acceptedAnswer": { "@type": "Answer", "text": "After you calculate your age, the result shows your next milestone birthday from this list: 18, 21, 25, 30, 40, 50, 60, 65, 70, 75, 80, 90 and 100 years, with the date it falls on. The guide to age milestones around the world explains what those ages mean in different countries." } }
   ]
 }
 </script>
@@ -206,6 +212,39 @@
   footer .foot{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:space-between;align-items:flex-start}
   footer nav{display:flex;gap:16px;flex-wrap:wrap}
   footer a{color:var(--ink-soft)}
+  /* ---- more date tools ---- */
+  .tools-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:22px}
+  .tool-card{border:1px solid var(--line);border-radius:18px;background:var(--surface);box-shadow:var(--shadow);padding:clamp(20px,3.5vw,28px)}
+  .tool-card h3{font-family:var(--font-display);font-size:22px;margin:0 0 4px;color:var(--ink)}
+  .tool-card .hint{color:var(--ink-soft);margin:0 0 18px;font-size:15.5px}
+  .tool-card input[type="number"]{width:100%;font:inherit;font-size:17px;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-height:52px}
+  .tool-card input[type="number"]:hover{border-color:var(--ink-faint)}
+  .tool-fields{display:grid;grid-template-columns:1fr;gap:14px}
+  @media (min-width:640px){.tool-fields.two{grid-template-columns:1fr auto;align-items:end}}
+  .tool-result{display:none;margin-top:20px;border-top:1px solid var(--line);padding-top:18px}
+  .tool-result.show{display:block}
+  .tool-result p{margin:6px 0}
+  .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 10px}
+  @media (max-width:480px){.countdown-grid{grid-template-columns:repeat(2,1fr)}}
+  .countdown-cell{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:14px 8px;text-align:center}
+  .countdown-cell .cd-num{font-family:var(--font-display);font-size:30px;font-weight:700;line-height:1;color:var(--teal);font-variant-numeric:tabular-nums}
+  .countdown-cell .cd-label{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+  .leap-badge{display:inline-block;font-weight:800;padding:6px 12px;border-radius:999px;font-size:14.5px}
+  .leap-badge.yes{background:var(--teal-soft);color:var(--teal-deep)}
+  @media (prefers-color-scheme: dark){.leap-badge.yes{color:var(--teal)}}
+  .leap-badge.no{background:var(--amber-soft);color:var(--amber)}
+  .weekday-big{font-family:var(--font-display);font-size:clamp(30px,5vw,40px);font-weight:700;line-height:1.1;color:var(--teal);margin:4px 0 6px}
+  /* ---- guides ---- */
+  .guide-article{border:1px solid var(--line);border-radius:18px;background:var(--surface);padding:clamp(22px,4vw,32px);margin-top:18px}
+  .guide-article h3{font-family:var(--font-display);font-size:24px;line-height:1.2;margin:0 0 10px;color:var(--ink)}
+  .guide-article h4{font-size:17px;margin:20px 0 4px;color:var(--ink)}
+  .guide-article p{margin:8px 0}
+  .guide-article ul{margin:8px 0;padding-left:22px}
+  .guide-article li{margin:4px 0}
+  .guide-toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;padding:0;list-style:none}
+  .guide-toc li{margin:0}
+  .guide-toc a{display:inline-block;font-size:14px;font-weight:700;text-decoration:none;background:var(--bg-soft);border:1px solid var(--line);border-radius:999px;padding:7px 13px;color:var(--ink)}
+  .guide-toc a:hover{border-color:var(--ink-faint)}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 <!-- Google AdSense -->
@@ -220,6 +259,8 @@
     <nav class="mainnav" aria-label="Site">
       <a href="#calculator">Calculator</a>
       <a href="#how-it-works">How it works</a>
+      <a href="#tools">Tools</a>
+      <a href="#guides">Guides</a>
       <a href="#faq">FAQ</a>
       <a href="#about">About</a>
       <a href="#privacy">Privacy</a>
@@ -391,6 +432,7 @@
     </section>
   </div>
 
+
   <!-- Google AdSense in-article ad -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3984771380851774"
      crossorigin="anonymous"></script>
@@ -403,7 +445,6 @@
   <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
-
   <!-- HOW IT WORKS -->
   <section class="block" id="how-it-works">
     <p class="section-kicker">How it works</p>
@@ -459,6 +500,220 @@
     <p style="font-size:15px">Zodiac dates are the commonly used ranges; the exact changeover can shift by a day depending on the year and time zone.</p>
   </section>
 
+  <!-- MORE DATE TOOLS -->
+  <section class="block" id="tools">
+    <p class="section-kicker">More date tools</p>
+    <h2>Three more ways to work with dates</h2>
+    <p>The main calculator answers &ldquo;how old am I?&rdquo; These three tools answer the questions that usually come next: how long until my birthday, is this year a leap year, and what day of the week was that date? They use exactly the same calendar maths — real month lengths, the Gregorian leap year rules, and the 29 February → 28 February convention for birthdays in non-leap years.</p>
+
+    <div class="tools-grid">
+      <!-- BIRTHDAY COUNTDOWN -->
+      <div class="tool-card" id="tool-birthday">
+        <h3>Birthday countdown</h3>
+        <p class="hint">Enter a date of birth to see a live countdown to the next birthday.</p>
+        <form id="bdayCountdownForm" novalidate>
+          <div class="tool-fields">
+            <div>
+              <label for="cdDob">Date of birth</label>
+              <input type="date" id="cdDob" min="1900-01-01" autocomplete="bday" required />
+            </div>
+          </div>
+          <p class="error" id="cdError" role="alert"></p>
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">Start countdown</button>
+          </div>
+        </form>
+        <div class="tool-result" id="cdResult" aria-live="polite">
+          <p id="cdSummary" style="font-size:17px"></p>
+          <div class="countdown-grid" aria-label="Time until next birthday">
+            <div class="countdown-cell"><div class="cd-num" id="cdDays">—</div><div class="cd-label">Days</div></div>
+            <div class="countdown-cell"><div class="cd-num" id="cdHours">—</div><div class="cd-label">Hours</div></div>
+            <div class="countdown-cell"><div class="cd-num" id="cdMinutes">—</div><div class="cd-label">Minutes</div></div>
+            <div class="countdown-cell"><div class="cd-num" id="cdSeconds">—</div><div class="cd-label">Seconds</div></div>
+          </div>
+          <p id="cdDetail"></p>
+        </div>
+      </div>
+
+      <!-- LEAP YEAR CHECKER -->
+      <div class="tool-card" id="tool-leap">
+        <h3>Leap year checker</h3>
+        <p class="hint">Enter any year to find out whether it is a leap year, and why.</p>
+        <form id="leapForm" novalidate>
+          <div class="tool-fields two">
+            <div>
+              <label for="leapYearInput">Year</label>
+              <input type="number" id="leapYearInput" min="1" max="9999" step="1" inputmode="numeric" placeholder="e.g. 2024" required />
+            </div>
+            <button class="btn btn-primary" type="submit">Check year</button>
+          </div>
+          <p class="error" id="leapError" role="alert"></p>
+        </form>
+        <div class="tool-result" id="leapResult" aria-live="polite">
+          <p><span class="leap-badge" id="leapBadge"></span></p>
+          <p id="leapExplanation"></p>
+          <p id="leapNeighbours"></p>
+        </div>
+      </div>
+
+      <!-- DAY OF THE WEEK FINDER -->
+      <div class="tool-card" id="tool-weekday">
+        <h3>Day of the week finder</h3>
+        <p class="hint">Enter any date from 1900 onwards to find the weekday it fell — or falls — on.</p>
+        <form id="weekdayForm" novalidate>
+          <div class="tool-fields">
+            <div>
+              <label for="weekdayDate">Date</label>
+              <input type="date" id="weekdayDate" min="1900-01-01" required />
+            </div>
+          </div>
+          <p class="error" id="weekdayError" role="alert"></p>
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">Find day of the week</button>
+          </div>
+        </form>
+        <div class="tool-result" id="weekdayResult" aria-live="polite">
+          <p class="weekday-big" id="weekdayName">—</p>
+          <p id="weekdayFull"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GUIDES -->
+  <section class="block" id="guides">
+    <p class="section-kicker">Guides</p>
+    <h2>Guides to age, calendars and birthdays</h2>
+    <p>Short, practical reads that explain the ideas behind the calculators above — how exact age is worked out, why leap years exist, what your zodiac sign and birthstone are, which ages matter around the world, and how to find the weekday you were born on without a computer.</p>
+    <ul class="guide-toc">
+      <li><a href="#guide-exact-age">How exact age is calculated</a></li>
+      <li><a href="#guide-leap-years">Leap years explained</a></li>
+      <li><a href="#guide-zodiac-birthstones">Zodiac signs &amp; birthstones</a></li>
+      <li><a href="#guide-milestones">Age milestones around the world</a></li>
+      <li><a href="#guide-weekday-born">Day of the week you were born</a></li>
+    </ul>
+
+    <article class="guide-article" id="guide-exact-age">
+      <h3>How exact age is calculated</h3>
+      <p>When someone asks your age, they almost never want a decimal or a rough estimate. They want the answer you would write on a form: completed years, then completed months, then the days left over. Getting that answer right is less obvious than it sounds, because the calendar is irregular. Months last 28, 29, 30 or 31 days, and roughly one year in four has an extra day in February. An exact age calculation has to respect all of that.</p>
+      <h4>Years first, then months, then days</h4>
+      <p>The standard method works from the largest unit downwards. First, count the completed years: subtract the birth year from the current year, and if this year&rsquo;s birthday has not happened yet, subtract one more. A person born on 15 August 2000 is still 25 on 10 August 2026, even though they are only five days away from 26 — the year is not complete until the birthday arrives.</p>
+      <p>Next, count the completed months since the last birthday. If the current day of the month is earlier than the birth day, the current month is not yet complete, so you stop one month earlier. Finally, count the remaining days from the last completed monthly anniversary up to today. That three-part answer — years, months, days — is your calendar age.</p>
+      <h4>The borrowing method</h4>
+      <p>On paper, the same calculation is often taught as subtraction with borrowing, much like column subtraction at school. Write the current date above the birth date as year–month–day and subtract each column. If the day column goes negative, borrow one month: add the length of the previous month (not always 30 days — the actual length) to the days and reduce the months by one. If the month column then goes negative, borrow one year: add 12 to the months and reduce the years by one.</p>
+      <p>The borrowing step is where approximate calculators go wrong. Borrowing a flat 30 days for every month produces answers that can be a day or two out, especially around February and around months with 31 days followed by months with 30. This calculator always borrows the real length of the month before the current one, which is why its answers match a careful hand calculation.</p>
+      <h4>The 29 February convention</h4>
+      <p>About one person in 1,461 is born on 29 February, a date that only exists in leap years. In the three years out of four when there is no 29 February, when does that person get older? Laws and customs differ, but the most common convention — and the one this site uses — is to treat 28 February as the birthday in non-leap years. Under that rule, someone born on 29 February 2000 turns a year older on 28 February in 2025, 2026 and 2027, and on 29 February itself in 2028. Some families celebrate on 1 March instead; either way, the age in years still increases exactly once a year.</p>
+      <h4>Why dividing by 365.25 is only an approximation</h4>
+      <p>A tempting shortcut is to count the total days lived and divide by 365.25 — the average length of a year when you spread leap days evenly. That gives a decimal age, such as 26.84 years. It is useful for statistics, growth charts and averaging across many people, but it is not a calendar age. It cannot tell you whether your birthday has happened yet this year, it smears the leap day evenly across four years instead of placing it on an actual date, and converting the decimal part back into months and days requires assuming every month is the same length. Two people with the same decimal age can have calendar ages that differ by weeks.</p>
+      <h4>Worked example: 1 January 2000 to 3 November 2026</h4>
+      <p>Take someone born on 1 January 2000, with the age calculated on 3 November 2026. Years: 2026 − 2000 = 26, and the birthday (1 January) has already happened in 2026, so the full 26 years count. Months: from 1 January to 1 November is 10 completed months. Days: from 1 November to 3 November is 2 days. The exact age is therefore <strong>26 years, 10 months and 2 days</strong>.</p>
+      <p>Counting the same span day by day gives 9,803 total days. Inside that total sit seven leap days — 29 February in 2000, 2004, 2008, 2012, 2016, 2020 and 2024 — each one a real day that person lived through. Divide 9,803 by 365.25 and you get about 26.84, which is close, but only the calendar method gives you the answer a form, a school or an employer actually wants. You can check both numbers yourself with the calculator at the top of this page: set the date of birth to 1 January 2000 in the example, or use the Date difference tab for the day count.</p>
+    </article>
+
+    <article class="guide-article" id="guide-leap-years">
+      <h3>Leap years explained</h3>
+      <p>A leap year is a year with 366 days instead of 365. The extra day is added to the end of February, making it 29 February instead of the usual 28. Leap years feel like a quirk, but they exist for a solid astronomical reason: the calendar year and the Earth&rsquo;s orbit do not quite line up, and without regular corrections the calendar would slowly drift out of step with the seasons.</p>
+      <h4>Why leap years exist</h4>
+      <p>The Earth takes about 365.2422 days to orbit the Sun — roughly 365 days, 5 hours, 48 minutes and 46 seconds. A calendar of exactly 365 days therefore falls short by just under a quarter of a day every year. One year&rsquo;s error is barely noticeable, but it compounds: after four years the calendar is almost a full day behind, after a century it is about 24 days behind, and after roughly 750 years the seasons would have shifted by nearly six months. Planting, harvests, religious festivals and tax years were all tied to the seasons, so ancient calendar makers could not simply ignore the drift.</p>
+      <p>Adding one extra day every four years is the obvious fix, and it works well — but not perfectly. A quarter of a day is 6 hours, while the real shortfall is about 5 hours 49 minutes. The four-year rule therefore overcorrects by about 11 minutes a year. That tiny excess is the reason the simple &ldquo;every four years&rdquo; rule needed refining.</p>
+      <h4>The Gregorian rules</h4>
+      <p>The calendar used almost everywhere today, the Gregorian calendar, decides leap years with three rules applied in order:</p>
+      <ul>
+        <li>A year divisible by 400 is a leap year.</li>
+        <li>Otherwise, a year divisible by 100 is <em>not</em> a leap year.</li>
+        <li>Otherwise, a year divisible by 4 is a leap year; all other years are not.</li>
+      </ul>
+      <p>In plain words: every fourth year is a leap year, except century years, which are only leap years when they are divisible by 400. Three examples show how this plays out. The year <strong>2000</strong> is divisible by 400, so it <em>was</em> a leap year — February 2000 really did have 29 days. The year <strong>1900</strong> is divisible by 100 but not by 400, so it was <em>not</em> a leap year, even though it is divisible by 4. And <strong>2100</strong> will follow the same pattern as 1900: divisible by 4 and by 100, but not by 400, so February 2100 will have only 28 days. Anyone who assumes &ldquo;divisible by 4&rdquo; is the whole rule will get 2100 wrong.</p>
+      <p>With those corrections, the average Gregorian year is 365.2425 days — within about 26 seconds a year of the real orbit. The calendar now drifts by roughly one day every 3,000 years or so, which is accurate enough that no further reform is planned. You can test any of these years yourself with the <a href="#tool-leap">leap year checker</a> above.</p>
+      <h4>From Julius Caesar to the reform of 1582</h4>
+      <p>The leap day itself is Roman. The Julian calendar, introduced under Julius Caesar in 45 BC on the advice of the astronomer Sosigenes, was the first widely used calendar to add a leap day every four years, giving an average year of 365.25 days. It was a huge improvement on what came before — earlier Roman calendars had relied on officials inserting whole extra months, often for political reasons — and it served Europe for more than 1,600 years.</p>
+      <p>But 365.25 is slightly too long, and by the 1500s the Julian calendar had drifted about 10 days from the seasons. The spring equinox, used to set the date of Easter, was falling on 11 March instead of 21 March. In 1582, Pope Gregory XIII introduced the refined calendar that now bears his name. It did two things at once: it removed 10 days to pull the calendar back into line (in the countries that adopted it first, Thursday 4 October 1582 was followed directly by Friday 15 October 1582), and it introduced the century rule described above to stop the drift happening again.</p>
+      <p>Adoption was gradual and sometimes contentious. Catholic countries switched in 1582; Protestant and Orthodox countries followed over the next few centuries, often suspicious of a reform associated with the Pope. Britain and its colonies, including America, switched in 1752, by which time 11 days had to be removed. Russia did not adopt the Gregorian calendar until 1918, and Greece until 1923. That staggered history is why dates from old documents sometimes need care: the same event can appear under two different dates depending on which calendar the record-keeper was using.</p>
+      <h4>What a leap day means for your age</h4>
+      <p>Leap days are real days lived, so an exact age calculator must count them. Someone who has lived through seven 29 Februaries has lived seven more days than a same-aged person whose span happened to include fewer leap years. And if you were born on 29 February itself, your &ldquo;real&rdquo; birthday arrives only every four years — this site counts 28 February as your birthday in the years in between, as explained in the guide to <a href="#guide-exact-age">how exact age is calculated</a>.</p>
+    </article>
+
+    <article class="guide-article" id="guide-zodiac-birthstones">
+      <h3>Zodiac signs and birthstones by month</h3>
+      <p>Alongside an exact age, many people want the traditional symbols attached to their birth date: a Western zodiac sign from their day and month, a birthstone from their month, and a Chinese zodiac animal from their birth year. None of these affect the age calculation — they are cultural traditions, some of them thousands of years old — but they are a familiar part of how birthdays are celebrated, so here is a complete reference for all three systems.</p>
+      <h4>The twelve Western zodiac signs</h4>
+      <p>The Western zodiac divides the year into twelve signs, each roughly a month long, based on the constellations the Sun passes through. The sign changes part-way through each month, so two people born in the same month can have different signs. The commonly used date ranges are:</p>
+      <ul>
+        <li><strong>Aries:</strong> 21 March – 19 April</li>
+        <li><strong>Taurus:</strong> 20 April – 20 May</li>
+        <li><strong>Gemini:</strong> 21 May – 20 June</li>
+        <li><strong>Cancer:</strong> 21 June – 22 July</li>
+        <li><strong>Leo:</strong> 23 July – 22 August</li>
+        <li><strong>Virgo:</strong> 23 August – 22 September</li>
+        <li><strong>Libra:</strong> 23 September – 22 October</li>
+        <li><strong>Scorpio:</strong> 23 October – 21 November</li>
+        <li><strong>Sagittarius:</strong> 22 November – 21 December</li>
+        <li><strong>Capricorn:</strong> 22 December – 19 January</li>
+        <li><strong>Aquarius:</strong> 20 January – 18 February</li>
+        <li><strong>Pisces:</strong> 19 February – 20 March</li>
+      </ul>
+      <p>If you were born on the first or last day of a range — a &ldquo;cusp&rdquo; day — be aware that different sources can differ by a day, because the exact moment the Sun changes sign varies slightly from year to year. The calculator on this page uses the standard ranges above.</p>
+      <h4>The twelve birthstones</h4>
+      <p>Birthstones assign a gemstone to each birth month. The modern list was standardised by jewellers in the early twentieth century, drawing on much older traditions linking gems to months and to the twelve stones of the biblical breastplate. The standard modern list is:</p>
+      <ul>
+        <li><strong>January — Garnet:</strong> a deep red stone traditionally linked with protection on journeys.</li>
+        <li><strong>February — Amethyst:</strong> a violet quartz once believed to keep the wearer clear-headed.</li>
+        <li><strong>March — Aquamarine:</strong> a pale blue-green stone named for seawater.</li>
+        <li><strong>April — Diamond:</strong> the hardest natural material, and the most valuable stone on this list.</li>
+        <li><strong>May — Emerald:</strong> a vivid green stone prized since ancient Egypt.</li>
+        <li><strong>June — Pearl:</strong> the only birthstone made by a living creature, the oyster.</li>
+        <li><strong>July — Ruby:</strong> a rich red stone, the colour of which was linked with courage.</li>
+        <li><strong>August — Peridot:</strong> a bright lime-green stone formed in volcanic rock.</li>
+        <li><strong>September — Sapphire:</strong> best known in deep blue, though it occurs in many colours.</li>
+        <li><strong>October — Opal:</strong> famous for shifting flashes of colour, called play-of-colour.</li>
+        <li><strong>November — Topaz:</strong> traditionally golden yellow; the blue form is a common modern alternative.</li>
+        <li><strong>December — Turquoise:</strong> a blue-green stone used in jewellery for thousands of years.</li>
+      </ul>
+      <p>Some months have traditional alternatives — citrine for November, tanzanite for December, alexandrite for June — which is why gift shops sometimes show slightly different lists. The table in the <a href="#how-it-works">How it works</a> section and the calculator&rsquo;s results use the standard list above.</p>
+      <h4>The Chinese zodiac cycle</h4>
+      <p>The Chinese zodiac works on years, not months. Twelve animals repeat in a fixed twelve-year cycle: <strong>Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog and Pig</strong>. Your animal is set by your year of birth in the Chinese calendar — 2024, for example, was the Year of the Dragon, 2025 the Year of the Snake, and 2026 the Year of the Horse.</p>
+      <p>One important detail: the Chinese year does not begin on 1 January. It begins at Chinese New Year, which falls between 21 January and 20 February. Someone born in January or early February may therefore belong to the previous year&rsquo;s animal. A quick way to find the animal for a year is to subtract 4 and divide by 12: the remainder, counting from 0, gives the position in the cycle starting with Rat. For 2000: 2000 − 4 = 1996, and 1996 ÷ 12 leaves a remainder of 4, which is Dragon — 2000 was indeed a Dragon year. The main calculator shows your Chinese zodiac animal automatically, using the calendar year as the simple reference most people expect.</p>
+    </article>
+
+    <article class="guide-article" id="guide-milestones">
+      <h3>Age milestones around the world</h3>
+      <p>Age is not just a number — at certain birthdays, the law and society start treating you differently. You gain the right to vote, to drive, to drink, to work, to marry, or to retire, and cultures mark the passage to adulthood with ceremonies that can be centuries old. The exact ages vary surprisingly much from country to country, which is worth knowing if you are travelling, moving abroad, or simply curious about when a milestone birthday really matters. The calculator on this page flags your next milestone from 18, 21, 25, 30, 40, 50, 60, 65, 70, 75, 80, 90 and 100 — here is the background behind those numbers.</p>
+      <h4>Voting age</h4>
+      <p>The most common voting age worldwide is <strong>18</strong>, used in the United Kingdom, the United States, India, Canada, Australia, France, Germany and most other democracies. It has not always been so: the UK only lowered its voting age from 21 to 18 in 1969, and the United States followed in 1971, driven by the argument that those old enough to be drafted for military service should be old enough to vote. A few countries go younger — Austria votes at 16, as do Brazil and Argentina for national elections — and Scotland and Wales allow 16-year-olds to vote in their devolved elections. At the other end, a small number of countries still set the age at 21.</p>
+      <h4>Driving age</h4>
+      <p>Driving ages differ not only by country but by what you can drive and whether you are supervised. In most of the <strong>United States</strong>, a learner&rsquo;s permit is available at 15 or 16 and a full licence at 16 to 18 depending on the state. In the <strong>United Kingdom</strong> you can drive a car at 17. Across most of the <strong>European Union</strong> the car licence age is 18, though some countries allow accompanied driving at 17. In <strong>India</strong>, the licence age is 18 for cars and for motorcycles with gears, and 16 for small motorcycles without gears, with parental consent. <strong>Australia</strong> uses a staged system: learners from 16 in most states, with provisional licences following at 17 or 18. <strong>Japan</strong> sets the ordinary car licence at 18.</p>
+      <h4>Drinking age</h4>
+      <p>The legal drinking age shows the widest spread of all. The <strong>United States</strong> is at the strict end at 21 nationwide. The <strong>United Kingdom</strong>, <strong>India</strong> (in most states, though it ranges from 18 to 25 and alcohol is prohibited entirely in a few states), <strong>Australia</strong> and <strong>Canada</strong> (19 in most provinces, 18 in Alberta, Manitoba and Quebec) cluster around 18 to 19. Much of <strong>Europe</strong> sets 18 for spirits but allows beer and wine at 16 — Germany, for example, permits beer and wine at 16 and spirits at 18. <strong>Japan</strong> sets drinking at 20, matching its age of adulthood traditions. A handful of countries prohibit alcohol entirely for religious reasons.</p>
+      <h4>Retirement age</h4>
+      <p>Retirement and state pension ages are rising almost everywhere as populations age. In the <strong>United Kingdom</strong>, the State Pension age is 66, legislated to rise to 67. In the <strong>United States</strong>, full Social Security benefits are available at 66 to 67 depending on birth year, with reduced benefits from 62. <strong>Germany</strong> is phasing its pension age up to 67. <strong>India</strong> has no single national retirement age, but government employees commonly retire at 60, and senior-citizen benefits often begin at 60. <strong>Japan</strong> allows pension claims from 60 with full benefits at 65, and many employers now keep staff to 65 or beyond. These figures change with legislation, so treat them as a snapshot and check the current rule for any decision that matters.</p>
+      <h4>Coming-of-age traditions</h4>
+      <p>Long before modern licences and voting registers, cultures marked the step into adulthood with ceremony. In much of Latin America, a girl&rsquo;s fifteenth birthday is celebrated as a <strong>quinceañera</strong> — a large, formal party, often beginning with a church service, marking the transition from childhood to young womanhood. In Jewish tradition, a boy becomes a <strong>bar mitzvah</strong> at 13 and a girl a <strong>bat mitzvah</strong> at 12 or 13, taking on religious responsibilities and often reading from the Torah in a synagogue ceremony. In <strong>Japan</strong>, <strong>Coming of Age Day</strong> (Seijin no Hi) is a national holiday on the second Monday of January, when those who have turned 20 — now aligned with the legal age of adulthood of 18 for many purposes, though the ceremonies traditionally honour 20-year-olds — attend ceremonies at local government offices, women often wearing formal furisode kimono. Other well-known markers include the Amish <strong>rumspringa</strong> in the late teens, debutante and cotillion balls, and the simple but universal tradition of the &ldquo;key of the door&rdquo; on an 18th or 21st birthday.</p>
+      <p>Whichever milestone you are counting towards, the pattern is the same: a specific birthday changes what you may do or how your community sees you. That is exactly why an exact age — years, months and days, not a rounded decimal — is the number that matters, and why this page shows your next milestone birthday and its date in every result.</p>
+    </article>
+
+    <article class="guide-article" id="guide-weekday-born">
+      <h3>How to find the day of the week you were born</h3>
+      <p>Most people know their birth date but not the weekday they were born on. It is a satisfying piece of personal trivia — and a genuinely useful check, because the weekday appears on many old documents, from hospital records to newspaper birth announcements. There are three ways to find it: use a tool, use a formula, or use the structure of the calendar itself.</p>
+      <h4>The quick way: the day of the week finder</h4>
+      <p>The fastest method is the <a href="#tool-weekday">day of the week finder</a> above. Enter any date from 1 January 1900 onwards and it shows the weekday, with the date written out in full — &ldquo;Saturday, 1 January 2000&rdquo;, for example. The main age calculator also shows your birth weekday automatically in the &ldquo;Born on&rdquo; card whenever you calculate your age. Behind the scenes, both tools rely on the same fact: the calendar is a repeating counting system, so a weekday is just a remainder — the number of days since a known reference date, divided by 7.</p>
+      <h4>Zeller&rsquo;s congruence, in plain words</h4>
+      <p>The classic pencil-and-paper method is Zeller&rsquo;s congruence, a formula published by the German mathematician Christian Zeller in the 1880s. It looks intimidating, but the idea is simple: add up a few numbers that capture how the days shift, then take the remainder on dividing by 7. Each part of the formula does one job:</p>
+      <ul>
+        <li>The <strong>day of the month</strong> shifts the weekday forward day by day.</li>
+        <li>A <strong>month term</strong> accounts for the uneven lengths of the months. Zeller counts March as the first month of the year, so the leap day falls at the very end of his &ldquo;year&rdquo; and never disturbs the month pattern.</li>
+        <li>A <strong>year term</strong> adds one day for each year passed, plus one extra for each leap year, because 365 days is 52 weeks and 1 day — every ordinary year pushes a given date one weekday forward, and every leap year pushes it two.</li>
+        <li>A <strong>century term</strong> adjusts for the Gregorian century rule — the fact that 1900 was not a leap year but 2000 was.</li>
+      </ul>
+      <p>Add those parts, divide by 7, and the remainder names the weekday. That is all the formula is: careful bookkeeping of every reason a weekday ever shifts.</p>
+      <h4>Worked example: 1 January 2000 was a Saturday</h4>
+      <p>Apply Zeller&rsquo;s congruence to 1 January 2000. Because Zeller treats January as month 13 of the previous year, the calculation uses month 13 and year 1999: the day is 1, the year of the century is 99, and the century is 19. Feeding those into the formula — day, plus the month term for month 13, plus 99, plus the leap-year quarter of 99 (which is 24), plus the quarter of the century (4), plus five times the century (95) — gives a total whose remainder on dividing by 7 corresponds, in Zeller&rsquo;s numbering, to <strong>Saturday</strong>. And indeed, 1 January 2000 — the first day of the new millennium celebrations — was a Saturday. You can verify it instantly in the finder above: enter 2000-01-01 and it returns Saturday.</p>
+      <p>If the formula feels heavy, there is a lighter mental method many people prefer: the Doomsday algorithm, popularised by the mathematician John Conway. It observes that certain easy-to-remember dates in every year — 4 April, 6 June, 8 August, 10 October, 12 December, and the last day of February — always share the same weekday, the year&rsquo;s &ldquo;Doomsday&rdquo;. Find the Doomsday for your birth year, then count forwards or backwards from the nearest of those anchor dates to your birthday. With a little practice it takes under a minute.</p>
+      <h4>The 400-year calendar cycle</h4>
+      <p>Here is the calendar fact that makes all of this work forever: the Gregorian calendar repeats exactly every 400 years. In 400 years there are exactly 146,097 days — 400 years of 365 days, plus 97 leap days (one every four years, minus three of the four century years). And 146,097 is exactly divisible by 7: it is 20,871 weeks, with no remainder. So the weekday pattern lines up perfectly at the end of each 400-year block: 1 January 2000 was a Saturday, 1 January 1600 was also a Saturday, and 1 January 2400 will be a Saturday too. The calendar on your phone, the finder on this page, and Zeller&rsquo;s nineteenth-century formula all agree because they are all counting the same endlessly repeating cycle.</p>
+    </article>
+  </section>
+
   <!-- FAQ -->
   <section class="block" id="faq">
     <p class="section-kicker">Questions</p>
@@ -496,6 +751,30 @@
       <summary>Is this calculator free?</summary>
       <div class="answer"><p>Yes. It is free to use, with no account, no sign-up and no limit on calculations.</p></div>
     </details>
+    <details class="faq">
+      <summary>How many days until my next birthday?</summary>
+      <div class="answer"><p>Use the <a href="#tool-birthday">Birthday countdown</a> tool in the More date tools section. Enter your date of birth and it shows a live countdown in days, hours, minutes and seconds to your next birthday, the date of that birthday, and the age you will turn. The main calculator also shows the number of days until your next birthday in its result.</p></div>
+    </details>
+    <details class="faq">
+      <summary>What is a leap year and how do I check one?</summary>
+      <div class="answer"><p>A leap year has 366 days, with an extra day on 29 February. A year is a leap year if it is divisible by 4, except century years, which must be divisible by 400. So 2000 and 2024 are leap years, but 1900 and 2100 are not. Use the <a href="#tool-leap">Leap year checker</a> in the More date tools section to test any year and see the previous and next leap years. See also the guide <a href="#guide-leap-years">Leap years explained</a>.</p></div>
+    </details>
+    <details class="faq">
+      <summary>How do I find the day of the week for any date?</summary>
+      <div class="answer"><p>Use the <a href="#tool-weekday">Day of the week finder</a> in the More date tools section. Enter any date from 1 January 1900 onwards and it shows the weekday that date fell or falls on, with the date written out in full. For example, 1 January 2000 was a Saturday. The guide <a href="#guide-weekday-born">How to find the day of the week you were born</a> explains how to work it out by hand, too.</p></div>
+    </details>
+    <details class="faq">
+      <summary>What is the difference between calendar age and decimal age?</summary>
+      <div class="answer"><p>Calendar age is your age counted in completed years, months and days — for example, 26 years, 10 months and 2 days — using real month lengths and leap years. Decimal age divides your total days lived by 365.25 to give a single number such as 26.84 years. Decimal age is useful for charts and averages, but calendar age is the age used on forms and in everyday life. This calculator shows calendar age as its main result and an approximate decimal age under &ldquo;Your age in other units&rdquo;.</p></div>
+    </details>
+    <details class="faq">
+      <summary>Can I use this calculator on my phone?</summary>
+      <div class="answer"><p>Yes. The site is designed to work on phones, tablets and computers. All tools — the age calculator, birthday countdown, leap year checker and day of the week finder — work in a mobile browser with no app to install and no sign-up.</p></div>
+    </details>
+    <details class="faq">
+      <summary>What age milestones does the calculator show?</summary>
+      <div class="answer"><p>After you calculate your age, the result shows your next milestone birthday from this list: 18, 21, 25, 30, 40, 50, 60, 65, 70, 75, 80, 90 and 100 years, with the date it falls on. The guide to <a href="#guide-milestones">age milestones around the world</a> explains what those ages mean — for voting, driving, drinking and retirement — in different countries.</p></div>
+    </details>
   </section>
 
   <!-- ABOUT -->
@@ -504,6 +783,10 @@
     <h2>About this age calculator</h2>
     <p>This site exists for one simple job: answering &ldquo;how old am I, exactly?&rdquo; without a sign-up, a download, or a page full of distractions. It was built as a free, static tool — the whole calculation happens in your browser, so it works on a phone, a tablet or a computer, and it works the same way every time you open it.</p>
     <p>Alongside the exact age, it shows the totals people usually want next: days lived, weeks lived, the next birthday, the weekday you were born on, and your zodiac sign and birthstone. The &ldquo;Age on a date&rdquo; and &ldquo;Date difference&rdquo; tabs cover the two follow-up questions that come up most often — how old someone was on a particular date, and how much time passed between two dates.</p>
+    <p>The <a href="#tools">More date tools</a> section adds three standalone tools that use the same calendar maths. The <strong>Birthday countdown</strong> ticks down live, second by second, to your next birthday and tells you the age you will turn. The <strong>Leap year checker</strong> tests any year against the full Gregorian rules — divisible by 4, except century years, which must be divisible by 400 — and shows the leap years before and after it. The <strong>Day of the week finder</strong> gives the weekday for any date from 1900 onwards, written out in full. Together with the main calculator, they cover almost every everyday question people ask about dates and ages.</p>
+    <p>The <a href="#guides">Guides</a> section explains the ideas behind the numbers in depth. There are five full-length guides: how exact age is calculated, with the borrowing method and a worked example; leap years explained, from the Earth&rsquo;s orbit to the Gregorian reform of 1582; zodiac signs and birthstones by month, including the Chinese zodiac cycle; age milestones around the world, covering voting, driving, drinking and retirement ages and coming-of-age traditions; and how to find the day of the week you were born, including Zeller&rsquo;s congruence in plain words. They are written to be genuinely useful — for checking a form, settling a family question, helping with homework, or simply satisfying curiosity.</p>
+    <p>This site is for anyone who needs a date answer they can trust: parents checking a child&rsquo;s age for school admission, students and teachers working through calendar questions, HR and office staff verifying ages on forms, families planning birthdays and anniversaries, and anyone who has ever wondered how many days they have been alive. Every tool is free, works on phones as well as computers, and needs no account.</p>
+    <p>The site is maintained and updated by its owner: calculations are checked against known reference dates (for example, 1 January 2000 was a Saturday, and 2000 was a leap year while 1900 was not), the guides are reviewed for accuracy, and corrections sent in by visitors are acted on. If a guide or tool ever falls out of date — for instance, when a country changes a legal age — it will be revised here.</p>
     <p>The site is run by Faraz Alam. If you spot a calculation that looks wrong, or something on this page could be clearer, please use the <a href="#contact">contact form</a> below and say what date you entered and what you expected — that makes it possible to check and fix.</p>
   </section>
 
@@ -579,6 +862,8 @@
     <nav aria-label="Footer">
       <a href="#calculator">Calculator</a>
       <a href="#how-it-works">How it works</a>
+      <a href="#tools">Tools</a>
+      <a href="#guides">Guides</a>
       <a href="#faq">FAQ</a>
       <a href="#about">About</a>
       <a href="#privacy">Privacy Policy</a>
@@ -838,6 +1123,129 @@
     $("diffTotalMonths").textContent=fmt.format(parts.years*12+parts.months)+" completed months";
     $("diffResults").classList.add("show");
   });
+
+  /* ---- More date tools ---- */
+  /* Birthday countdown */
+  var cdTimer=null, cdDob=null, cdTarget=null, cdTurning=0;
+  function stopCountdown(){ if(cdTimer){ clearInterval(cdTimer); cdTimer=null; } }
+  function computeNextBirthday(dob, from){
+    var base = midnight(from);
+    var cand = birthdayInYear(dob, base.getFullYear());
+    if(midnight(cand) < base) cand = birthdayInYear(dob, base.getFullYear()+1);
+    return cand;
+  }
+  function renderCountdown(){
+    if(!cdDob || !cdTarget) return;
+    var now = new Date();
+    var todayMid = midnight(now);
+    var targetMid = midnight(cdTarget);
+    var isToday = targetMid.getTime()===todayMid.getTime();
+    if(isToday){
+      $("cdDays").textContent="0";
+      $("cdHours").textContent="0";
+      $("cdMinutes").textContent="0";
+      $("cdSeconds").textContent="0";
+      $("cdSummary").innerHTML="<strong>It&rsquo;s your birthday today!</strong> You turn <strong>"+cdTurning+"</strong> today, "+shortDate(cdTarget)+".";
+      $("cdDetail").textContent="Happy birthday! The countdown will start again tomorrow for your next birthday.";
+      return;
+    }
+    var diff = cdTarget - now;
+    if(diff<=0){
+      cdTarget = computeNextBirthday(cdDob, now);
+      cdTurning = cdTarget.getFullYear()-cdDob.getFullYear();
+      diff = cdTarget - now;
+    }
+    var totalSec = Math.floor(Math.max(0,diff)/1000);
+    var d = Math.floor(totalSec/86400); totalSec-=d*86400;
+    var h = Math.floor(totalSec/3600); totalSec-=h*3600;
+    var m = Math.floor(totalSec/60); var s = totalSec-m*60;
+    $("cdDays").textContent=fmt.format(d);
+    $("cdHours").textContent=h;
+    $("cdMinutes").textContent=m;
+    $("cdSeconds").textContent=s;
+    $("cdSummary").innerHTML="Your next birthday is <strong>"+longDate(cdTarget)+"</strong> — you will turn <strong>"+cdTurning+"</strong>.";
+    $("cdDetail").textContent="That is "+fmt.format(Math.round((targetMid-todayMid)/86400000))+" calendar day"+(Math.round((targetMid-todayMid)/86400000)===1?"":"s")+" from today. Counting down live to midnight at the start of your birthday.";
+  }
+  var cdForm = $("bdayCountdownForm");
+  if(cdForm){
+    $("cdDob").max = formatLocalDate(today);
+    cdForm.addEventListener("submit", function(e){
+      e.preventDefault();
+      var dob = parseDateInput($("cdDob").value);
+      var err = $("cdError");
+      if(!dob){ showError(err,"Please enter a date of birth."); return; }
+      if(dob>today){ showError(err,"Your date of birth cannot be in the future."); return; }
+      if(dob.getFullYear()<1900){ showError(err,"Please enter a date from 1900 onwards."); return; }
+      hideError(err);
+      cdDob = new Date(dob.getFullYear(), dob.getMonth(), dob.getDate());
+      cdTarget = computeNextBirthday(cdDob, new Date());
+      /* Countdown target is midnight at the start of the birthday */
+      cdTarget = new Date(cdTarget.getFullYear(), cdTarget.getMonth(), cdTarget.getDate());
+      cdTurning = cdTarget.getFullYear()-cdDob.getFullYear();
+      $("cdResult").classList.add("show");
+      stopCountdown(); renderCountdown();
+      cdTimer = setInterval(renderCountdown, 1000);
+      $("cdResult").scrollIntoView({behavior:"smooth", block:"nearest"});
+    });
+  }
+
+  /* Leap year checker */
+  var leapForm = $("leapForm");
+  if(leapForm){
+    leapForm.addEventListener("submit", function(e){
+      e.preventDefault();
+      var err = $("leapError");
+      var raw = $("leapYearInput").value.trim();
+      var y = Number(raw);
+      if(!raw || !isFinite(y) || Math.floor(y)!==y){ showError(err,"Please enter a whole year, for example 2024."); return; }
+      if(y<1 || y>9999){ showError(err,"Please enter a year between 1 and 9999."); return; }
+      hideError(err);
+      var leap = isLeap(y);
+      var badge = $("leapBadge");
+      badge.textContent = y+(leap?" is a leap year · 366 days":" is not a leap year · 365 days");
+      badge.className = "leap-badge "+(leap?"yes":"no");
+      var expl = "";
+      if(y%400===0){
+        expl = y+" is divisible by 400, so it is a leap year. Century years are normally not leap years, but the 400 rule is the exception to that exception — that is why 2000 was a leap year.";
+      } else if(y%100===0){
+        expl = y+" is a century year. It is divisible by 4 and by 100, but not by 400, so under the Gregorian rules it is not a leap year. February in "+y+" has 28 days. 1900 was the same, and 2100 will be too.";
+      } else if(y%4===0){
+        expl = y+" is divisible by 4 and is not a century year, so it is a leap year. February in "+y+" has 29 days.";
+      } else {
+        var rem = y%4;
+        expl = y+" is not divisible by 4 (dividing by 4 leaves a remainder of "+rem+"), so it is not a leap year. February in "+y+" has 28 days.";
+      }
+      $("leapExplanation").textContent = expl;
+      var prev = y-1; while(prev>=1 && !isLeap(prev)) prev--;
+      var next = y+1; while(!isLeap(next)) next++;
+      var neigh = "";
+      if(leap){
+        neigh = "The previous leap year was "+prev+" and the next leap year is "+next+".";
+      } else {
+        neigh = "The previous leap year was "+prev+" and the next leap year is "+next+".";
+      }
+      $("leapNeighbours").textContent = neigh;
+      $("leapResult").classList.add("show");
+    });
+  }
+
+  /* Day of the week finder */
+  var weekdayForm = $("weekdayForm");
+  if(weekdayForm){
+    weekdayForm.addEventListener("submit", function(e){
+      e.preventDefault();
+      var err = $("weekdayError");
+      var d = parseDateInput($("weekdayDate").value);
+      if(!d){ showError(err,"Please enter a date."); return; }
+      if(d.getFullYear()<1900){ showError(err,"Please enter a date from 1 January 1900 onwards."); return; }
+      hideError(err);
+      var weekday = d.toLocaleDateString("en-GB",{weekday:"long"});
+      $("weekdayName").textContent = weekday;
+      var verb = midnight(d).getTime()===today.getTime() ? "is" : (d<today ? "was" : "will be");
+      $("weekdayFull").innerHTML = "<strong>"+longDate(d)+"</strong> — that date "+verb+" a <strong>"+weekday+"</strong>.";
+      $("weekdayResult").classList.add("show");
+    });
+  }
 
   /* Contact: build a mail draft, never send automatically */
   $("contactForm").addEventListener("submit", function(e){
